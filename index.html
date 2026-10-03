@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lovely & Pratik — Christian Wedding Invitation</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Canvas Confetti Library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<!-- Three.js for 3D Background Particles -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+gold: '#D4AF37',
+brightgold: '#FFD700',
+lightgold: '#F3E5C8',
+darkgold: '#B8860B',
+warmgold: '#996515',
+champagne: '#FFFDF5',
+purewhite: '#FFFFFF',
+ivory: '#FAF8F5',
+warmcream: '#F4ECE1',
+softshadow: 'rgba(212, 175, 55, 0.2)',
+charcoal: '#1C1917'
+},
+fontFamily: {
+cursive: ['"Alex Brush"', 'cursive'],
+serif: ['"Cormorant Garamond"', 'serif'],
+cinzel: ['"Cinzel"', 'serif'],
+sans: ['"Montserrat"', 'sans-serif']
+}
+}
+}
+}
+</script>
+<style>
+body {
+background: linear-gradient(135deg, #FAF8F5 0%, #F4ECE1 50%, #EBE1D1 100%);
+color: #1C1917;
+overflow-x: hidden;
+min-height: 100vh;
+}
+
+#three-canvas {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+z-index: 0;
+pointer-events: none;
+}
+
+/* Glassmorphism Card with Pure White & Gold Foil Borders */
+.glass-card {
+background: rgba(255, 255, 255, 0.95);
+backdrop-filter: blur(16px);
+border: 2px solid #D4AF37;
+box-shadow: 0 20px 45px rgba(184, 134, 11, 0.15), inset 0 0 20px rgba(255, 215, 0, 0.1);
+position: relative;
+}
+
+.perspective-1200 {
+perspective: 1200px;
+}
+
+/* Interactive Envelope with Golden Tape / Peel Unveil */
+.envelope-container {
+position: relative;
+width: 320px;
+height: 240px;
+background: #FFFFFF;
+border-radius: 16px;
+border: 3px solid #D4AF37;
+box-shadow: 0 30px 60px rgba(184, 134, 11, 0.3), 0 0 30px rgba(255, 215, 0, 0.2);
+cursor: pointer;
+transition: transform 0.5s ease-out;
+transform-style: preserve-3d;
+}
+
+@media (min-width: 640px) {
+.envelope-container {
+width: 480px;
+height: 330px;
+}
+}
+
+.envelope-container:hover {
+transform: scale(1.03) rotateY(2deg);
+}
+
+/* Envelope Top Flap */
+.envelope-flap {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 50%;
+background: linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%);
+border-bottom: 2px solid #D4AF37;
+clip-path: polygon(0 0, 50% 100%, 100% 0);
+transform-origin: top center;
+transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+z-index: 6;
+}
+
+.envelope-container.open .envelope-flap {
+transform: rotateX(180deg);
+z-index: 1;
+}
+
+/* Golden Satin Ribbon / Tape Strips Across Envelope */
+.golden-tape-h {
+position: absolute;
+top: 50%;
+left: 0;
+width: 100%;
+height: 42px;
+transform: translateY(-50%);
+background: linear-gradient(90deg, #B8860B 0%, #FFD700 35%, #FFF9E6 50%, #FFD700 65%, #B8860B 100%);
+box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+z-index: 4;
+transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+border-top: 1px solid #FFFFFF;
+border-bottom: 1px solid #B8860B;
+}
+
+.golden-tape-v {
+position: absolute;
+left: 50%;
+top: 0;
+height: 100%;
+width: 42px;
+transform: translateX(-50%);
+background: linear-gradient(180deg, #B8860B 0%, #FFD700 35%, #FFF9E6 50%, #FFD700 65%, #B8860B 100%);
+box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+z-index: 4;
+transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+border-left: 1px solid #FFFFFF;
+border-right: 1px solid #B8860B;
+}
+
+.envelope-container.open .golden-tape-h {
+opacity: 0;
+transform: translateY(-50%) scaleX(0.1) rotate(15deg);
+}
+
+.envelope-container.open .golden-tape-v {
+opacity: 0;
+transform: translateX(-50%) scaleY(0.1) rotate(-15deg);
+}
+
+/* Golden Ring Seal Stamp */
+.rings-seal {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 80px;
+height: 80px;
+background: radial-gradient(circle, #FFFFFF 0%, #FFFDF5 60%, #F3E5C8 100%);
+border-radius: 50%;
+box-shadow: 0 10px 30px rgba(184, 134, 11, 0.5), inset 0 0 12px rgba(212, 175, 55, 0.6);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 10;
+transition: all 0.6s ease;
+border: 3px solid #D4AF37;
+color: #B8860B;
+}
+
+.envelope-container:hover .rings-seal {
+transform: translate(-50%, -50%) scale(1.1) rotate(8deg);
+}
+
+.envelope-container.open .rings-seal {
+opacity: 0;
+transform: translate(-50%, -50%) scale(0);
+}
+
+.letter-preview {
+position: absolute;
+bottom: 10px;
+left: 3%;
+width: 94%;
+height: 92%;
+background: #FFFFFF;
+border-radius: 12px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+z-index: 3;
+padding: 20px;
+text-align: center;
+border: 2px solid #D4AF37;
+}
+
+.envelope-container.open .letter-preview {
+transform: translateY(-135px) scale(1.04);
+}
+
+/* Gold Ornamental Corner SVG Styling */
+.corner-ornament {
+position: absolute;
+width: 42px;
+height: 42px;
+pointer-events: none;
+z-index: 5;
+opacity: 0.9;
+}
+.corner-tl { top: 8px; left: 8px; }
+.corner-tr { top: 8px; right: 8px; transform: scaleX(-1); }
+.corner-bl { bottom: 8px; left: 8px; transform: scaleY(-1); }
+.corner-br { bottom: 8px; right: 8px; transform: scale(-1, -1); }
+
+/* Unity Candle Golden Flame */
+.candle-flame {
+width: 18px;
+height: 30px;
+background: radial-gradient(circle at 50% 80%, #FFFFFF 0%, #FFD700 45%, #B8860B 90%);
+border-radius: 50% 50% 20% 20%;
+box-shadow: 0 0 20px #FFD700, 0 0 35px #D4AF37;
+animation: flameFlicker 1.6s infinite alternate ease-in-out;
+transform-origin: bottom center;
+}
+
+@keyframes flameFlicker {
+0% { transform: scale(1) rotate(-2deg); opacity: 0.95; }
+50% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+100% { transform: scale(0.95) rotate(-1deg); opacity: 0.9; }
+}
+
+::-webkit-scrollbar {
+width: 8px;
+}
+::-webkit-scrollbar-track {
+background: #FAF8F5;
+}
+::-webkit-scrollbar-thumb {
+background: #D4AF37;
+border-radius: 4px;
+}
+
+.toast-msg {
+position: fixed;
+bottom: 24px;
+right: 24px;
+z-index: 100;
+transform: translateY(100px);
+opacity: 0;
+transition: all 0.4s ease;
+}
+.toast-msg.show {
+transform: translateY(0);
+opacity: 1;
+}
+</style>
+</head>
+<body class="font-sans antialiased selection:bg-gold selection:text-white relative">
+
+<canvas id="three-canvas"></canvas>
+
+<div class="fixed top-4 right-4 z-50 flex items-center gap-2 flex-wrap justify-end">
+<!-- Shower Gold Petals Button -->
+<button onclick="triggerPetalBurst()" class="flex items-center gap-2 bg-white/90 backdrop-blur border border-gold shadow-xl px-4 py-2 rounded-full text-darkgold hover:bg-gold hover:text-white transition-all text-xs font-semibold">
+<i class="fa-solid fa-sparkles text-gold animate-spin" style="animation-duration: 6s;"></i>
+<span class="hidden sm:inline">Shower Gold Petals</span>
+</button>
+
+<!-- Audio Music Toggle Button -->
+<button id="musicToggleBtn" onclick="toggleAudio()" class="flex items-center gap-2 bg-white/90 backdrop-blur border border-gold shadow-xl px-4 py-2 rounded-full text-darkgold hover:bg-gold hover:text-white transition-all text-xs font-semibold">
+<i id="musicIcon" class="fa-solid fa-music text-gold"></i>
+<span id="musicText">Play Organ Hymn</span>
+</button>
+
+<!-- Host Access Button -->
+<button onclick="openAdminModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-gold to-darkgold text-white font-bold shadow-xl px-4 py-2 rounded-full hover:brightness-110 transition text-xs border border-white/60" title="Host Management Console">
+<i class="fa-solid fa-crown"></i>
+<span class="hidden md:inline">Host Access</span>
+</button>
+</div>
+
+<nav id="mainNav" class="fixed top-0 left-0 w-full z-40 bg-white/95 backdrop-blur-md border-b border-gold/40 py-3 transition-all duration-700 -translate-y-full shadow-sm">
+<div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+<a href="#hero" class="font-cursive text-2xl md:text-3xl text-darkgold font-bold flex items-center gap-2">
+<!-- Intertwined Rings Icon -->
+<svg class="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="9" cy="12" r="5" stroke="#D4AF37" stroke-width="2"/>
+<circle cx="15" cy="12" r="5" stroke="#B8860B" stroke-width="2"/>
+</svg>
+L & P
+</a>
+<div class="hidden md:flex gap-6 text-xs uppercase tracking-widest font-bold text-charcoal">
+<a href="#hero" class="hover:text-gold transition">Home</a>
+<a href="#verse" class="hover:text-gold transition">Blessing</a>
+<a href="#story" class="hover:text-gold transition">Our Story</a>
+<a href="#events" class="hover:text-gold transition">Order of Service</a>
+<a href="#candle" class="hover:text-gold transition">Unity Candle</a>
+<a href="#venue" class="hover:text-gold transition">Venue</a>
+<a href="#rsvp" class="hover:text-gold transition">RSVP</a>
+</div>
+<div class="flex items-center gap-2">
+<a href="#rsvp" class="bg-gradient-to-r from-gold to-darkgold text-white text-xs px-5 py-2 rounded-full font-bold hover:brightness-105 transition shadow-md border border-gold">
+<i class="fa-solid fa-rings-wedding mr-1"></i> RSVP
+</a>
+</div>
+</div>
+</nav>
+
+<section id="envelopeIntro" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-[#FAF8F5]/98 backdrop-blur-2xl transition-all duration-1000 overflow-y-auto">
+<!-- Header Banner -->
+<div class="text-center mb-6 max-w-lg px-2">
+<div class="flex justify-center items-center gap-3 text-gold mb-2">
+<span class="w-12 h-[1px] bg-gold"></span>
+<!-- Intertwined Wedding Rings SVG -->
+<svg class="w-8 h-8" viewBox="0 0 64 64" fill="none">
+<circle cx="26" cy="34" r="16" stroke="#D4AF37" stroke-width="4"/>
+<circle cx="38" cy="34" r="16" stroke="#B8860B" stroke-width="4"/>
+<polygon points="26,14 29,18 23,18" fill="#FFD700"/>
+</svg>
+<span class="w-12 h-[1px] bg-gold"></span>
+</div>
+<p class="text-darkgold font-serif italic text-sm tracking-wide mb-1">Holy Matrimony Invitation</p>
+<h1 class="font-serif text-3xl md:text-5xl text-charcoal font-bold tracking-wide">Lovely & Pratik</h1>
+<p class="text-darkgold text-xs tracking-widest uppercase mt-2 font-medium">Peel Golden Tape To Unveil Invitation</p>
+</div>
+
+<!-- 3D Envelope Container with Peelable Gold Tape -->
+<div class="perspective-1200 my-2">
+<div id="envelopeBox" onclick="openEnvelope()" class="envelope-container">
+<div class="envelope-flap"></div>
+<!-- Peelable Golden Satin Tape Cross -->
+<div class="golden-tape-h flex items-center justify-center">
+<span class="text-[9px] uppercase font-bold tracking-widest text-darkgold/70 select-none">Peel To Open</span>
+</div>
+<div class="golden-tape-v"></div>
+<!-- Center Rings Seal Stamp -->
+<div class="rings-seal">
+<svg class="w-7 h-7 text-gold mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="9" cy="12" r="5" stroke="#D4AF37" stroke-width="2"/>
+<circle cx="15" cy="12" r="5" stroke="#B8860B" stroke-width="2"/>
+</svg>
+<span class="font-cursive text-xs font-bold leading-none text-darkgold">L & P</span>
+</div>
+
+<!-- Invitation Preview Card inside Envelope -->
+<div class="letter-preview flex flex-col justify-between items-center relative">
+<!-- SVG Corner Ornaments -->
+<svg class="corner-ornament corner-tl" viewBox="0 0 100 100" fill="#D4AF37"><path d="M0,0 L100,0 L100,8 L8,8 L8,100 L0,100 Z M18,18 L80,18 L80,24 L24,24 L24,80 L18,80 Z"/></svg>
+<svg class="corner-ornament corner-tr" viewBox="0 0 100 100" fill="#D4AF37"><path d="M0,0 L100,0 L100,8 L8,8 L8,100 L0,100 Z M18,18 L80,18 L80,24 L24,24 L24,80 L18,80 Z"/></svg>
+
+<div>
+<p class="text-darkgold font-cursive text-2xl md:text-3xl font-bold">You Are Cordially Invited</p>
+<h2 class="font-serif text-lg md:text-2xl text-charcoal font-bold mt-1">Lovely & Pratik</h2>
+<div class="w-16 h-0.5 bg-gold mx-auto my-1.5"></div>
+<p class="text-[11px] md:text-xs text-darkgold uppercase tracking-widest font-bold">Thursday, November 5, 2026</p>
+</div>
+
+<p class="text-[11px] text-darkgold font-semibold italic flex items-center gap-1.5">
+<i class="fa-solid fa-church"></i> Sacred Heart Church, Jasidih
+</p>
+
+<button class="bg-gradient-to-r from-gold to-darkgold text-white text-[10px] uppercase tracking-widest px-6 py-2 rounded-full shadow-md hover:brightness-105 transition border border-white/60 font-bold">
+<i class="fa-solid fa-envelope-open mr-1"></i> Reveal Invitation Card
+</button>
+</div>
+</div>
+</div>
+
+<p class="text-darkgold text-xs mt-6 animate-bounce flex items-center gap-2 font-semibold">
+<i class="fa-solid fa-hand-pointer text-gold"></i> Tap golden seal tape to unveil
+</p>
+</section>
+
+<main id="mainWebsite" class="opacity-0 transition-opacity duration-1000 relative z-10">
+
+<section id="hero" class="min-h-screen flex flex-col items-center justify-center pt-24 pb-16 px-4 text-center relative">
+<div class="max-w-4xl mx-auto glass-card p-6 md:p-14 rounded-3xl border-2 border-gold shadow-2xl relative overflow-hidden my-auto">
+<!-- Corner Frame SVG Styling -->
+<svg class="corner-ornament corner-tl" viewBox="0 0 100 100" fill="#D4AF37"><path d="M0,0 L100,0 L100,8 L8,8 L8,100 L0,100 Z M18,18 L80,18 L80,24 L24,24 L24,80 L18,80 Z"/></svg>
+<svg class="corner-ornament corner-tr" viewBox="0 0 100 100" fill="#D4AF37"><path d="M0,0 L100,0 L100,8 L8,8 L8,100 L0,100 Z M18,18 L80,18 L80,24 L24,24 L24,80 L18,80 Z"/></svg>
+<svg class="corner-ornament corner-bl" viewBox="0 0 100 100" fill="#D4AF37"><path d="M0,0 L100,0 L100,8 L8,8 L8,100 L0,100 Z M18,18 L80,18 L80,24 L24,24 L24,80 L18,80 Z"/></svg>
+<svg class="corner-ornament corner-br" viewBox="0 0 100 100" fill="#D4AF37"><path d="M0,0 L100,0 L100,8 L8,8 L8,100 L0,100 Z M18,18 L80,18 L80,24 L24,24 L24,80 L18,80 Z"/></svg>
+
+<!-- Intertwined Wedding Rings Header Graphic -->
+<div class="flex justify-center items-center gap-3 text-gold mb-2">
+<svg class="w-10 h-10 drop-shadow-md" viewBox="0 0 64 64" fill="none">
+<circle cx="26" cy="34" r="16" stroke="#D4AF37" stroke-width="4"/>
+<circle cx="38" cy="34" r="16" stroke="#B8860B" stroke-width="4"/>
+<polygon points="26,14 29,18 23,18" fill="#FFD700"/>
+<polygon points="38,14 41,18 35,18" fill="#FFD700"/>
+</svg>
+</div>
+
+<p class="uppercase tracking-[0.25em] text-xs md:text-sm text-darkgold font-bold mb-1">Holy Matrimony Invitation</p>
+<p class="uppercase tracking-[0.15em] text-xs text-charcoal/70 font-semibold mb-3">Together with their parents & families</p>
+<!-- Main Bride & Groom Names -->
+<h1 class="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-charcoal font-bold my-1 tracking-tight leading-tight">
+Lovely <span class="font-cursive text-gold font-normal text-5xl md:text-7xl">&</span> Pratik
+</h1>
+
+<!-- Featured Image: Husband & Wife Holding Hands with Wedding Rings -->
+<div class="my-6 relative max-w-lg mx-auto rounded-2xl overflow-hidden border-2 border-gold p-1.5 bg-ivory shadow-xl group">
+<div class="relative rounded-xl overflow-hidden aspect-[16/9]">
+<img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80"
+alt="Husband and Wife Holding Hands with Wedding Rings"
+class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent flex items-end justify-center p-3">
+<span class="text-white text-xs font-serif italic tracking-wider flex items-center gap-2">
+<i class="fa-solid fa-rings-wedding text-gold"></i> Bound by Vows & Eternal Love
+</span>
+</div>
+</div>
+</div>
+
+<p class="font-serif italic text-base md:text-2xl text-charcoal/90 mt-2 max-w-xl mx-auto leading-relaxed">
+Request the honor of your presence to witness their holy wedding vows and celebrate their union in Jesus Christ.
+</p>
+
+<!-- Date Banner -->
+<div class="my-6 flex justify-center items-center gap-3 text-gold">
+<div class="h-[1px] w-8 sm:w-16 bg-gold"></div>
+<span class="font-cinzel text-xs sm:text-base md:text-lg text-darkgold font-bold tracking-widest uppercase">THURSDAY, NOVEMBER 5, 2026</span>
+<div class="h-[1px] w-8 sm:w-16 bg-gold"></div>
+</div>
+
+<!-- Live Countdown Timer -->
+<div class="grid grid-cols-4 gap-2 sm:gap-4 max-w-sm sm:max-w-md mx-auto my-6">
+<div class="bg-ivory p-2.5 sm:p-4 rounded-2xl shadow border border-gold text-center">
+<span id="days" class="block font-cinzel text-xl sm:text-3xl text-darkgold font-bold">00</span>
+<span class="text-[9px] sm:text-xs uppercase tracking-widest text-charcoal/70 font-bold">Days</span>
+</div>
+<div class="bg-ivory p-2.5 sm:p-4 rounded-2xl shadow border border-gold text-center">
+<span id="hours" class="block font-cinzel text-xl sm:text-3xl text-darkgold font-bold">00</span>
+<span class="text-[9px] sm:text-xs uppercase tracking-widest text-charcoal/70 font-bold">Hours</span>
+</div>
+<div class="bg-ivory p-2.5 sm:p-4 rounded-2xl shadow border border-gold text-center">
+<span id="minutes" class="block font-cinzel text-xl sm:text-3xl text-darkgold font-bold">00</span>
+<span class="text-[9px] sm:text-xs uppercase tracking-widest text-charcoal/70 font-bold">Mins</span>
+</div>
+<div class="bg-ivory p-2.5 sm:p-4 rounded-2xl shadow border border-gold text-center">
+<span id="seconds" class="block font-cinzel text-xl sm:text-3xl text-darkgold font-bold">00</span>
+<span class="text-[9px] sm:text-xs uppercase tracking-widest text-charcoal/70 font-bold">Secs</span>
+</div>
+</div>
+
+<!-- Action Buttons -->
+<div class="pt-2 flex flex-wrap justify-center gap-3">
+<a href="#rsvp" class="bg-gradient-to-r from-gold to-darkgold text-white border border-gold font-bold px-6 py-3 rounded-full hover:brightness-105 transition shadow-xl text-xs uppercase tracking-widest flex items-center gap-2">
+<i class="fa-solid fa-heart text-white"></i> Confirm RSVP
+</a>
+<a href="#events" class="bg-white border-2 border-gold text-darkgold font-bold px-6 py-3 rounded-full hover:bg-champagne transition shadow text-xs uppercase tracking-widest flex items-center gap-2">
+<i class="fa-solid fa-church text-gold"></i> Order of Service
+</a>
+</div>
+</div>
+</section>
+
+<section id="verse" class="py-16 px-4 relative">
+<div class="max-w-3xl mx-auto text-center">
+<div class="glass-card p-8 md:p-12 rounded-3xl border-2 border-gold shadow-2xl space-y-4">
+<div class="flex justify-center items-center gap-2 text-gold">
+<i class="fa-solid fa-cross text-2xl text-gold"></i>
+</div>
+<p class="font-serif italic text-lg md:text-2xl text-darkgold font-semibold leading-relaxed">
+"Love is patient, love is kind. It does not envy, it does not boast, it is not proud... Love never fails."
+</p>
+<p class="text-xs font-bold uppercase tracking-widest text-darkgold">— 1 Corinthians 13:4-8</p>
+<div class="w-16 h-0.5 bg-gold mx-auto pt-1"></div>
+<p class="text-xs text-charcoal/80 font-medium italic">
+"Therefore what God has joined together, let no one separate." — Mark 10:9
+</p>
+</div>
+</div>
+</section>
+
+<section id="story" class="py-16 px-4 relative">
+<div class="max-w-4xl mx-auto">
+<div class="text-center mb-10">
+<span class="text-gold font-cursive text-3xl md:text-4xl">Our Sacred Journey</span>
+<h2 class="font-serif text-3xl md:text-5xl text-charcoal font-bold mt-1">Faith & Vows</h2>
+<div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-3"></div>
+</div>
+
+<div class="glass-card p-6 md:p-12 rounded-3xl border-2 border-gold shadow-2xl">
+<div class="flex flex-col md:flex-row items-center gap-8">
+<!-- Couple Photo holding hands with rings -->
+<div class="w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-gold p-2 shrink-0 bg-ivory shadow-xl relative overflow-hidden group">
+<img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80"
+alt="Lovely and Pratik holding hands"
+class="w-full h-full object-cover rounded-full group-hover:scale-105 transition duration-500">
+</div>
+
+<div class="space-y-3 text-center md:text-left">
+<span class="text-xs uppercase font-bold text-darkgold tracking-widest flex items-center justify-center md:justify-start gap-1.5">
+<i class="fa-solid fa-rings-wedding text-gold"></i> United in Matrimony
+</span>
+<h3 class="font-serif text-2xl md:text-3xl text-charcoal font-bold">Two Hands, One Lifelong Promise</h3>
+<p class="text-charcoal/85 text-sm leading-relaxed font-medium">
+Guided by faith, love, and family blessings, Lovely & Pratik are ready to place the golden wedding rings upon each other's fingers and take their solemn vows before God. We invite you to share in prayer, hymn, and joy as we step into holy matrimony.
+</p>
+<div class="pt-2 flex justify-center md:justify-start items-center gap-3 text-gold font-cursive text-3xl">
+<span>Lovely</span>
+<svg class="w-6 h-6 text-gold inline" viewBox="0 0 24 24" fill="none">
+<circle cx="9" cy="12" r="5" stroke="#D4AF37" stroke-width="2"/>
+<circle cx="15" cy="12" r="5" stroke="#B8860B" stroke-width="2"/>
+</svg>
+<span>Pratik</span>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<section id="events" class="py-16 px-4 relative">
+<div class="max-w-5xl mx-auto">
+<div class="text-center mb-12">
+<span class="text-gold font-cursive text-3xl md:text-4xl">Sacred Celebrations</span>
+<h2 class="font-serif text-3xl md:text-5xl text-charcoal font-bold mt-1">Order of Service</h2>
+<p class="text-darkgold text-sm mt-2">Join us for the holy church liturgy and evening wedding reception.</p>
+<div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-3"></div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Holy Nuptial Mass Card -->
+<div class="glass-card p-6 md:p-8 rounded-3xl border-2 border-gold shadow-2xl relative flex flex-col justify-between">
+<div>
+<div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-gold to-darkgold text-white flex items-center justify-center text-2xl mb-4 border-2 border-white shadow">
+<i class="fa-solid fa-church"></i>
+</div>
+<span class="text-xs font-bold text-darkgold uppercase tracking-wider block text-center">Thursday, Nov 5, 2026</span>
+<h3 class="font-serif text-2xl sm:text-3xl text-charcoal font-bold text-center mt-1">Holy Nuptial Mass & Ring Vows</h3>
+<p class="text-xs sm:text-sm text-darkgold font-bold text-center mt-2 flex items-center justify-center gap-2">
+<i class="fa-regular fa-clock"></i> 10:30 AM – 1:00 PM
+</p>
+<p class="text-xs sm:text-sm text-charcoal/80 text-center mt-4 leading-relaxed font-medium">
+Solemn exchange of wedding vows, sacred ring blessing, scripture readings, and holy nuptial benediction.
+</p>
+</div>
+<div class="mt-6 pt-4 border-t border-gold/30 text-xs text-center text-charcoal/80 font-semibold">
+<strong>Venue:</strong> Sacred Heart Church, Jasidih <br>
+<strong>Dress Code:</strong> Formal / Elegantly Dressed
+</div>
+</div>
+
+<!-- Grand Wedding Reception Card -->
+<div class="glass-card p-6 md:p-8 rounded-3xl border-2 border-gold shadow-2xl relative flex flex-col justify-between">
+<div>
+<div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-gold to-darkgold text-white flex items-center justify-center text-2xl mb-4 border-2 border-white shadow">
+<i class="fa-solid fa-wine-glass-empty"></i>
+</div>
+<span class="text-xs font-bold text-darkgold uppercase tracking-wider block text-center">Thursday, Nov 5, 2026</span>
+<h3 class="font-serif text-2xl sm:text-3xl text-charcoal font-bold text-center mt-1">Grand Wedding Reception</h3>
+<p class="text-xs sm:text-sm text-darkgold font-bold text-center mt-2 flex items-center justify-center gap-2">
+<i class="fa-regular fa-clock"></i> 6:30 PM Onwards
+</p>
+<p class="text-xs sm:text-sm text-charcoal/80 text-center mt-4 leading-relaxed font-medium">
+Cake cutting, bridal toast, first dance, live music performance, and a sumptuous wedding banquet dinner.
+</p>
+</div>
+<div class="mt-6 pt-4 border-t border-gold/30 text-xs text-center text-charcoal/80 font-semibold">
+<strong>Venue:</strong> Jasidih Celebration Grounds <br>
+<strong>Dress Code:</strong> Evening Formal / Festive Suit & Gown
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section id="candle" class="py-16 px-4 relative">
+<div class="max-w-3xl mx-auto">
+<div class="glass-card p-6 sm:p-10 rounded-3xl border-2 border-gold shadow-2xl text-center relative overflow-hidden">
+<span class="text-gold font-cursive text-3xl md:text-4xl block">Sacred Blessing</span>
+<h2 class="font-serif text-2xl sm:text-4xl text-charcoal font-bold mt-1">Light a Golden Unity Candle</h2>
+<p class="text-xs sm:text-sm text-charcoal/80 mt-2 font-medium max-w-md mx-auto">
+Offer your heartfelt prayers and blessings for Lovely & Pratik by tapping to light a golden holy flame below.
+</p>
+
+<!-- Candle Visual Element -->
+<div class="my-6 flex flex-col items-center justify-center">
+<div id="candleFlameContainer" class="h-10 flex items-end justify-center mb-1 transition-all duration-500 opacity-30 scale-75">
+<div class="candle-flame"></div>
+</div>
+<div onclick="lightUnityCandle()" class="cursor-pointer group relative">
+<svg class="w-24 h-28 text-gold drop-shadow-xl group-hover:scale-105 transition duration-300" viewBox="0 0 60 100">
+<rect x="20" y="20" width="20" height="70" rx="3" fill="#FFFFFF" stroke="#D4AF37" stroke-width="2"/>
+<rect x="18" y="85" width="24" height="8" rx="2" fill="#D4AF37"/>
+<line x1="30" y1="10" x2="30" y2="20" stroke="#B8860B" stroke-width="2"/>
+</svg>
+</div>
+<p class="text-xs text-darkgold font-bold uppercase tracking-widest mt-3">
+<span id="candleCounter">312</span> Golden Candles Lit
+</p>
+</div>
+
+<button onclick="lightUnityCandle()" class="bg-gradient-to-r from-gold to-darkgold text-white font-bold text-xs uppercase tracking-widest px-7 py-3 rounded-full shadow-lg hover:brightness-105 transition border border-white/50">
+<i class="fa-solid fa-fire mr-2"></i> Light Blessing Candle
+</button>
+</div>
+</div>
+</section>
+
+<section id="venue" class="py-16 px-4 relative">
+<div class="max-w-5xl mx-auto">
+<div class="text-center mb-12">
+<span class="text-gold font-cursive text-3xl md:text-4xl">Location</span>
+<h2 class="font-serif text-3xl md:text-5xl text-charcoal font-bold mt-1">Wedding Venues</h2>
+<div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-3"></div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+<div class="glass-card p-6 sm:p-8 rounded-3xl border-2 border-gold flex flex-col justify-between shadow-2xl">
+<div class="space-y-5">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-gold to-darkgold text-white flex items-center justify-center text-xl shrink-0 border border-white">
+<i class="fa-solid fa-church"></i>
+</div>
+<div>
+<h3 class="font-serif text-2xl text-charcoal font-bold">Sacred Heart Church</h3>
+<p class="text-charcoal/80 text-xs sm:text-sm font-medium mt-0.5">Jasidih Railway Station Area, Jasidih, Jharkhand</p>
+</div>
+</div>
+
+<p class="text-charcoal/80 text-xs sm:text-sm leading-relaxed border-t border-gold/30 pt-3 font-medium">
+Located near Jasidih Junction railway over bridge, providing seamless travel access for all local and outstation guests.
+</p>
+
+<div class="space-y-2 text-xs sm:text-sm font-medium">
+<div class="flex items-center gap-3 text-charcoal/90">
+<i class="fa-solid fa-train text-darkgold w-4"></i>
+<span><strong>Landmark:</strong> Jasidih Junction / Over Bridge</span>
+</div>
+<div class="flex items-center gap-3 text-charcoal/90">
+<i class="fa-solid fa-clock text-darkgold w-4"></i>
+<span><strong>Church Service:</strong> 10:30 AM Mass</span>
+</div>
+<div class="flex items-center gap-3 text-charcoal/90">
+<i class="fa-solid fa-utensils text-darkgold w-4"></i>
+<span><strong>Reception Banquet:</strong> 6:30 PM Onwards</span>
+</div>
+</div>
+</div>
+
+<div class="pt-6 flex flex-wrap gap-3">
+<a href="https://www.google.com/maps/search/?api=1&query=Jasidih+Railway+Over+Bridge" target="_blank" class="inline-flex items-center gap-2 bg-gradient-to-r from-gold to-darkgold text-white text-xs px-5 py-3 rounded-xl font-bold hover:brightness-105 transition shadow-lg uppercase tracking-wider border border-white/40">
+<i class="fa-solid fa-map-location-dot"></i> Get Directions
+</a>
+<button onclick="downloadCalendarEvent()" class="inline-flex items-center gap-2 bg-white border-2 border-gold text-darkgold text-xs px-5 py-3 rounded-xl font-bold hover:bg-champagne transition uppercase tracking-wider shadow">
+<i class="fa-regular fa-calendar-plus"></i> Add To Calendar
+</button>
+</div>
+</div>
+
+<!-- Map Graphic Card -->
+<div class="glass-card p-6 rounded-3xl border-2 border-gold flex flex-col items-center justify-center relative overflow-hidden h-72 lg:h-auto min-h-[280px]">
+<div class="w-16 h-16 rounded-full bg-gradient-to-br from-gold to-darkgold text-white flex items-center justify-center text-3xl mb-3 border-2 border-white animate-bounce shadow-xl">
+<i class="fa-solid fa-cross"></i>
+</div>
+<h4 class="font-serif text-2xl md:text-3xl text-charcoal font-bold text-center">Jasidih, Jharkhand</h4>
+<p class="text-xs text-darkgold mt-1 font-bold text-center">Sacred Heart Church & Celebration Grounds</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="rsvp" class="py-16 px-4 relative">
+<div class="max-w-5xl mx-auto">
+<div class="text-center mb-12">
+<span class="text-gold font-cursive text-3xl md:text-4xl">Be Our Guest</span>
+<h2 class="font-serif text-3xl md:text-5xl text-charcoal font-bold mt-1">RSVP & Blessings</h2>
+<p class="text-darkgold text-sm mt-2">Kindly confirm your presence by responding below.</p>
+<div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-3"></div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- RSVP Form Card -->
+<div class="lg:col-span-7 glass-card p-6 sm:p-8 rounded-3xl border-2 border-gold shadow-2xl relative">
+<!-- Lock Banner Overlay -->
+<div id="rsvpLockedBanner" class="hidden absolute inset-0 bg-white/95 backdrop-blur-md rounded-3xl z-20 flex flex-col items-center justify-center text-center p-6 border-2 border-gold">
+<div class="w-14 h-14 rounded-full bg-gold text-white flex items-center justify-center text-2xl mb-3 shadow">
+<i class="fa-solid fa-lock"></i>
+</div>
+<h3 class="font-serif text-2xl text-charcoal font-bold">RSVP Closed</h3>
+<p class="text-darkgold text-xs mt-2 max-w-xs font-medium">
+The hosts have finalized guest attendance. Thank you for your warm prayers!
+</p>
+</div>
+
+<form id="rsvpForm" onsubmit="handleRSVPSubmit(event)" class="space-y-4">
+<div>
+<label class="block text-xs uppercase font-bold text-charcoal/90 mb-1.5">Your Name *</label>
+<input type="text" id="guestName" required placeholder="e.g. Mr. & Mrs. Joseph Thomas" class="w-full px-4 py-2.5 rounded-xl bg-ivory border border-gold/60 focus:border-darkgold focus:ring-1 focus:ring-darkgold outline-none text-xs sm:text-sm font-medium">
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-xs uppercase font-bold text-charcoal/90 mb-1.5">Phone / Contact *</label>
+<input type="text" id="guestContact" required placeholder="Your phone number" class="w-full px-4 py-2.5 rounded-xl bg-ivory border border-gold/60 focus:border-darkgold focus:ring-1 focus:ring-darkgold outline-none text-xs sm:text-sm font-medium">
+</div>
+<div>
+<label class="block text-xs uppercase font-bold text-charcoal/90 mb-1.5">Attendance Status *</label>
+<select id="guestStatus" required class="w-full px-4 py-2.5 rounded-xl bg-ivory border border-gold/60 focus:border-darkgold focus:ring-1 focus:ring-darkgold outline-none text-xs sm:text-sm font-medium">
+<option value="Joyfully Accepts">Joyfully Accepts</option>
+<option value="Regretfully Declines">Regretfully Declines</option>
+</select>
+</div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-xs uppercase font-bold text-charcoal/90 mb-1.5">Number of Guests</label>
+<select id="guestCount" class="w-full px-4 py-2.5 rounded-xl bg-ivory border border-gold/60 focus:border-darkgold focus:ring-1 focus:ring-darkgold outline-none text-xs sm:text-sm font-medium">
+<option value="1">1 Guest</option>
+<option value="2">2 Guests</option>
+<option value="3">3 Guests</option>
+<option value="4">4 Guests</option>
+<option value="5+">5+ Guests</option>
+</select>
+</div>
+<div>
+<label class="block text-xs uppercase font-bold text-charcoal/90 mb-1.5">Dietary Notes</label>
+<input type="text" id="guestDiet" placeholder="Standard / Vegetarian" class="w-full px-4 py-2.5 rounded-xl bg-ivory border border-gold/60 focus:border-darkgold focus:ring-1 focus:ring-darkgold outline-none text-xs sm:text-sm font-medium">
+</div>
+</div>
+
+<div>
+<label class="block text-xs uppercase font-bold text-charcoal/90 mb-1.5">Heartfelt Blessing / Prayer</label>
+<textarea id="guestbookMsg" rows="3" placeholder="Write a blessing for Lovely & Pratik..." class="w-full px-4 py-2.5 rounded-xl bg-ivory border border-gold/60 focus:border-darkgold focus:ring-1 focus:ring-darkgold outline-none text-xs sm:text-sm font-medium"></textarea>
+</div>
+
+<button type="submit" id="submitRsvpBtn" class="w-full py-3.5 bg-gradient-to-r from-gold to-darkgold text-white border border-gold font-bold rounded-xl hover:brightness-105 transition shadow-xl text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+<i class="fa-solid fa-paper-plane"></i> Send RSVP & Blessing
+</button>
+</form>
+</div>
+
+<!-- Guestbook Wall Card -->
+<div class="lg:col-span-5 flex flex-col">
+<div class="glass-card p-6 rounded-3xl border-2 border-gold shadow-2xl h-full flex flex-col justify-between">
+<div>
+<h3 class="font-serif text-2xl text-charcoal font-bold mb-3 flex items-center justify-between border-b border-gold/30 pb-2">
+<span>Blessing Wall</span>
+<svg class="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="none">
+<circle cx="9" cy="12" r="5" stroke="#D4AF37" stroke-width="2"/>
+<circle cx="15" cy="12" r="5" stroke="#B8860B" stroke-width="2"/>
+</svg>
+</h3>
+<div id="guestbookList" class="space-y-3 overflow-y-auto max-h-[380px] pr-1">
+<!-- Dynamic guest messages render here -->
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<footer class="py-10 bg-white text-charcoal text-center relative border-t-2 border-gold/40">
+<div class="max-w-xl mx-auto px-4 space-y-3">
+<h2 class="font-cursive text-3xl text-darkgold">Lovely & Pratik</h2>
+<p class="font-serif italic text-xs text-darkgold">"And over all these virtues put on love, which binds them all together in perfect unity." — Colossians 3:14</p>
+<div class="pt-2">
+<button onclick="openAdminModal()" class="text-xs text-darkgold hover:underline inline-flex items-center gap-1 font-semibold">
+<i class="fa-solid fa-shield-halved"></i> Host Management Dashboard
+</button>
+</div>
+<p class="text-[10px] uppercase tracking-widest text-charcoal/50 pt-1">©️ 2026 Lovely & Pratik. Holy Matrimony Invitation.</p>
+</div>
+</footer>
+
+</main>
+
+<div id="adminModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden flex items-center justify-center p-4">
+<div class="bg-white border-2 border-gold rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl text-charcoal overflow-hidden relative">
+<!-- Header -->
+<div class="p-5 border-b border-gold/30 bg-ivory flex justify-between items-center shrink-0">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-gold text-white flex items-center justify-center text-base font-bold shadow">
+<i class="fa-solid fa-crown"></i>
+</div>
+<div>
+<h2 class="font-serif text-xl text-darkgold font-bold">Host Admin Dashboard</h2>
+<p class="text-xs text-charcoal/70">Lovely & Pratik — RSVP Tracker</p>
+</div>
+</div>
+<button onclick="closeAdminModal()" class="text-charcoal/70 hover:text-darkgold text-2xl p-1 transition">
+<i class="fa-solid fa-xmark"></i>
+</button>
+</div>
+
+<!-- Passcode Verification Screen -->
+<div id="adminPinScreen" class="p-8 text-center flex-1 flex flex-col items-center justify-center space-y-4">
+<div class="w-14 h-14 rounded-full bg-gold/10 text-gold border border-gold/40 flex items-center justify-center text-2xl">
+<i class="fa-solid fa-lock"></i>
+</div>
+<h3 class="font-serif text-2xl font-bold text-charcoal">Enter Host Passcode</h3>
+<p class="text-xs text-darkgold max-w-xs">
+Please enter PIN to manage live RSVP responses. <br>
+<span class="text-darkgold font-semibold">(Default PIN: 2026)</span>
+</p>
+<div class="flex gap-2 max-w-xs w-full">
+<input type="password" id="adminPinInput" placeholder="PIN (2026)" class="w-full px-4 py-2.5 rounded-xl bg-ivory border border-gold/50 text-center text-lg tracking-widest text-darkgold focus:outline-none focus:ring-1 focus:ring-gold font-mono">
+<button onclick="verifyAdminPin()" class="bg-gold text-white font-bold px-5 py-2.5 rounded-xl hover:bg-darkgold transition shadow text-xs">
+Unlock
+</button>
+</div>
+<p id="adminPinError" class="text-rose-600 text-xs hidden font-medium">
+<i class="fa-solid fa-circle-exclamation mr-1"></i> Incorrect passcode. Use 2026.
+</p>
+</div>
+
+<!-- Dashboard Content -->
+<div id="adminDashboardContent" class="hidden flex-1 overflow-y-auto p-5 space-y-5">
+<!-- Stat Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="bg-ivory p-3.5 rounded-2xl border border-gold/40 text-center shadow-sm">
+<span class="text-[10px] uppercase tracking-wider text-charcoal/70 font-semibold block">Total RSVPs</span>
+<span id="statTotalRsvp" class="font-serif text-2xl sm:text-3xl font-bold text-darkgold">0</span>
+</div>
+<div class="bg-ivory p-3.5 rounded-2xl border border-emerald-500/40 text-center shadow-sm">
+<span class="text-[10px] uppercase tracking-wider text-emerald-700 font-semibold block">Attending</span>
+<span id="statAttendingCount" class="font-serif text-2xl sm:text-3xl font-bold text-emerald-700">0</span>
+</div>
+<div class="bg-ivory p-3.5 rounded-2xl border border-gold/40 text-center shadow-sm">
+<span class="text-[10px] uppercase tracking-wider text-charcoal/70 font-semibold block">Guest Headcount</span>
+<span id="statTotalHeadcount" class="font-serif text-2xl sm:text-3xl font-bold text-darkgold">0</span>
+</div>
+<div class="bg-ivory p-3.5 rounded-2xl border border-rose-500/40 text-center shadow-sm">
+<span class="text-[10px] uppercase tracking-wider text-rose-700 font-semibold block">Declined</span>
+<span id="statDeclinedCount" class="font-serif text-2xl sm:text-3xl font-bold text-rose-700">0</span>
+</div>
+</div>
+
+<!-- Admin Action Controls -->
+<div class="flex flex-wrap items-center justify-between gap-3 bg-ivory p-3.5 rounded-2xl border border-gold/30">
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold text-charcoal">RSVP Form Status:</span>
+<button id="lockRsvpToggleBtn" onclick="toggleRsvpLockState()" class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition bg-emerald-700 text-white">
+<i id="lockBtnIcon" class="fa-solid fa-lock-open"></i>
+<span id="lockBtnText">Open</span>
+</button>
+</div>
+
+<button onclick="exportGuestListCSV()" class="bg-gold text-white text-xs font-bold px-3.5 py-1.5 rounded-lg hover:bg-darkgold transition flex items-center gap-1.5 shadow">
+<i class="fa-solid fa-file-excel"></i> Export CSV
+</button>
+</div>
+
+<!-- Search & Filter Controls -->
+<div class="flex flex-col sm:flex-row gap-2">
+<input type="text" id="guestSearchInput" oninput="renderAdminGuestTable()" placeholder="Search guest name..." class="flex-1 px-3 py-2 text-xs rounded-xl bg-ivory border border-gold/30 text-charcoal placeholder-charcoal/40 outline-none">
+<select id="adminFilterStatus" onchange="renderAdminGuestTable()" class="px-3 py-2 text-xs rounded-xl bg-ivory border border-gold/30 text-charcoal outline-none font-semibold">
+<option value="ALL">All Responses</option>
+<option value="Joyfully Accepts">Attending Only</option>
+<option value="Regretfully Declines">Declined Only</option>
+</select>
+</div>
+
+<!-- Guest Responses Table -->
+<div class="overflow-x-auto rounded-xl border border-gold/30 bg-ivory">
+<table class="w-full text-left text-xs">
+<thead class="bg-gold text-white uppercase tracking-wider font-bold">
+<tr>
+<th class="p-3">Guest</th>
+<th class="p-3">Contact</th>
+<th class="p-3">Status</th>
+<th class="p-3">Count</th>
+<th class="p-3">Dietary</th>
+<th class="p-3">Blessing</th>
+<th class="p-3 text-center">Action</th>
+</tr>
+</thead>
+<tbody id="adminGuestTableBody" class="divide-y divide-gold/10 text-charcoal">
+<!-- Populated dynamically -->
+</tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- Notification Toast UI -->
+<div id="toast" class="toast-msg bg-white text-charcoal px-5 py-3 rounded-2xl shadow-2xl border-2 border-gold flex items-center gap-2 text-xs font-semibold">
+<i id="toastIcon" class="fa-solid fa-circle-check text-gold text-lg"></i>
+<span id="toastText">Action completed successfully!</span>
+</div>
+
+<script>
+let rsvpList = [
+{ id: '1', name: 'Deacon Matthew & Family', contact: '+91 9876543210', status: 'Joyfully Accepts', count: 4, diet: 'Standard', msg: 'May God abundantly bless Lovely & Pratik with peace, happiness, and everlasting devotion!', timestamp: '2026-10-01 10:30 AM' },
+{ id: '2', name: 'Grace & Andrew', contact: '+91 9812345678', status: 'Joyfully Accepts', count: 2, diet: 'Standard', msg: 'Heartiest congratulations! Praying for a lifetime of joy in Jasidih!', timestamp: '2026-10-02 02:15 PM' }
+];
+let isRsvpLocked = false;
+let isAdminAuthenticated = false;
+let candleCount = 312;
+
+if (localStorage.getItem('wedding_rsvps_christian_gold')) {
+try { rsvpList = JSON.parse(localStorage.getItem('wedding_rsvps_christian_gold')); } catch(e) {}
+}
+
+/* 3D Particle Scene with Golden Falling Glitter & White Flower Petals */
+let scene, camera, renderer, particleGroup;
+
+function init3D() {
+const canvas = document.getElementById('three-canvas');
+scene = new THREE.Scene();
+camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 8;
+
+renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+particleGroup = new THREE.Group();
+scene.add(particleGroup);
+
+// Shimmering Golden Particle Geometry
+const goldGeo = new THREE.SphereGeometry(0.04, 8, 8);
+const goldMat = new THREE.MeshBasicMaterial({ color: 0xD4AF37 });
+const brightGoldMat = new THREE.MeshBasicMaterial({ color: 0xFFD700 });
+
+for (let i = 0; i < 90; i++) {
+const mat = i % 2 === 0 ? goldMat : brightGoldMat;
+const mesh = new THREE.Mesh(goldGeo, mat);
+
+mesh.position.x = (Math.random() - 0.5) * 18;
+mesh.position.y = (Math.random() - 0.5) * 18;
+mesh.position.z = (Math.random() - 0.5) * 10;
+
+mesh.userData = {
+speedY: 0.003 + Math.random() * 0.008,
+speedX: (Math.random() - 0.5) * 0.004,
+pulse: Math.random() * Math.PI
+};
+
+particleGroup.add(mesh);
+}
+
+animate3D();
+}
+
+function animate3D() {
+requestAnimationFrame(animate3D);
+if (particleGroup) {
+particleGroup.children.forEach(p => {
+p.position.y -= p.userData.speedY;
+p.position.x += Math.sin(p.userData.pulse) * p.userData.speedX;
+p.userData.pulse += 0.02;
+
+if (p.position.y < -8) {
+p.position.y = 8;
+p.position.x = (Math.random() - 0.5) * 18;
+}
+});
+}
+renderer.render(scene, camera);
+}
+
+function triggerPetalBurst() {
+confetti({
+particleCount: 85,
+spread: 110,
+origin: { y: 0.5 },
+colors: ['#D4AF37', '#FFD700', '#FFFFFF', '#B8860B']
+});
+showToast("Showering golden petals & sparkles!");
+}
+
+window.addEventListener('resize', () => {
+if (camera && renderer) {
+camera.aspect = window.innerWidth / window.innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(window.innerWidth, window.innerHeight);
+}
+});
+
+/* Organ Hymn Melody Audio Context */
+let audioCtx = null;
+let isPlaying = false;
+
+function toggleAudio() {
+const btnText = document.getElementById('musicText');
+const btnIcon = document.getElementById('musicIcon');
+
+if (!isPlaying) {
+if (!audioCtx) {
+audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+const hymnNotes = [261.63, 329.63, 392.00, 523.25, 493.88, 440.00, 392.00, 523.25];
+let idx = 0;
+
+function playHymnMelody() {
+if (!isPlaying) return;
+const osc = audioCtx.createOscillator();
+const gain = audioCtx.createGain();
+
+osc.type = 'triangle';
+osc.frequency.setValueAtTime(hymnNotes[idx % hymnNotes.length], audioCtx.currentTime);
+
+gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.14, audioCtx.currentTime + 0.3);
+gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.0);
+
+osc.connect(gain);
+gain.connect(audioCtx.destination);
+
+osc.start();
+osc.stop(audioCtx.currentTime + 2.1);
+
+idx++;
+setTimeout(playHymnMelody, 1800);
+}
+
+isPlaying = true;
+playHymnMelody();
+btnText.textContent = "Pause Organ"
+btnIcon.classList.remove('fa-music');
+btnIcon.classList.add('fa-pause');
+} else {
+isPlaying = false;
+btnText.textContent = "Play Organ Hymn"
+btnIcon.classList.remove('fa-pause');
+btnIcon.classList.add('fa-music');
+}
+}
+
+/* Unboxing Peel Golden Tape Animation */
+function openEnvelope() {
+const box = document.getElementById('envelopeBox');
+const intro = document.getElementById('envelopeIntro');
+const main = document.getElementById('mainWebsite');
+const nav = document.getElementById('mainNav');
+
+box.classList.add('open');
+
+confetti({
+particleCount: 120,
+spread: 100,
+origin: { y: 0.6 },
+colors: ['#D4AF37', '#FFD700', '#FFFFFF', '#B8860B']
+});
+
+if (!isPlaying) toggleAudio();
+
+setTimeout(() => {
+intro.style.opacity = '0';
+intro.style.pointerEvents = 'none';
+
+main.classList.remove('opacity-0');
+nav.classList.remove('-translate-y-full');
+
+setTimeout(() => {
+intro.style.display = 'none';
+}, 1000);
+}, 1200);
+}
+
+/* Live Countdown Timer */
+const weddingDate = new Date("November 5, 2026 10:30:00").getTime();
+
+function updateCountdown() {
+const now = new Date().getTime();
+const dist = weddingDate - now;
+
+if (dist < 0) {
+document.getElementById("days").innerText = "00"
+document.getElementById("hours").innerText = "00"
+document.getElementById("minutes").innerText = "00"
+document.getElementById("seconds").innerText = "00"
+return;
+}
+
+const d = Math.floor(dist / (1000 * 60 * 60 * 24));
+const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+const s = Math.floor((dist % (1000 * 60)) / 1000);
+
+document.getElementById("days").innerText = String(d).padStart(2, '0');
+document.getElementById("hours").innerText = String(h).padStart(2, '0');
+document.getElementById("minutes").innerText = String(m).padStart(2, '0');
+document.getElementById("seconds").innerText = String(s).padStart(2, '0');
+}
+setInterval(updateCountdown, 1000);
+
+/* Light Unity Candle Handler */
+function lightUnityCandle() {
+const flame = document.getElementById('candleFlameContainer');
+flame.classList.remove('opacity-30', 'scale-75');
+flame.classList.add('opacity-100', 'scale-110');
+
+candleCount++;
+document.getElementById('candleCounter').textContent = candleCount;
+
+confetti({
+particleCount: 50,
+spread: 60,
+origin: { y: 0.7 },
+colors: ['#FFD700', '#FFFFFF', '#D4AF37']
+});
+
+showToast("Your golden blessing candle is now lit!");
+}
+
+/* RSVP Form & Guestbook Functions */
+function handleRSVPSubmit(e) {
+e.preventDefault();
+if (isRsvpLocked) {
+showToast("RSVP submissions are currently locked.");
+return;
+}
+
+const name = document.getElementById('guestName').value.trim();
+const contact = document.getElementById('guestContact').value.trim();
+const status = document.getElementById('guestStatus').value;
+const countVal = document.getElementById('guestCount').value;
+const diet = document.getElementById('guestDiet').value.trim() || 'None';
+const msg = document.getElementById('guestbookMsg').value.trim();
+
+const newItem = {
+id: Date.now().toString(),
+name: name,
+contact: contact,
+status: status,
+count: status === 'Regretfully Declines' ? 0 : parseInt(countVal) || 1,
+diet: diet,
+msg: msg,
+timestamp: new Date().toLocaleString()
+};
+
+rsvpList.unshift(newItem);
+localStorage.setItem('wedding_rsvps_christian_gold', JSON.stringify(rsvpList));
+
+renderPublicGuestbook();
+if (isAdminAuthenticated) renderAdminDashboard();
+
+document.getElementById('rsvpForm').reset();
+triggerPetalBurst();
+showToast("Thank you for your RSVP and blessings!");
+}
+
+function renderPublicGuestbook() {
+const list = document.getElementById('guestbookList');
+list.innerHTML = '';
+
+const validMsgs = rsvpList.filter(item => item.msg && item.msg.trim() !== '');
+
+if (validMsgs.length === 0) {
+list.innerHTML = `<p class="text-xs text-charcoal/60 italic text-center py-6 font-medium">Be the first to leave a prayer or blessing for Lovely & Pratik!</p>`;
+return;
+}
+
+validMsgs.forEach(item => {
+const card = document.createElement('div');
+card.className = 'bg-ivory p-3.5 rounded-2xl border border-gold/40 shadow-sm space-y-1';
+card.innerHTML = `
+<p class="text-xs text-charcoal/90 italic font-medium">"${escapeHtml(item.msg)}"</p>
+<span class="block text-[11px] font-bold text-darkgold">— ${escapeHtml(item.name)}</span>
+`;
+list.appendChild(card);
+});
+}
+
+/* Host Management Functions */
+function openAdminModal() {
+document.getElementById('adminModal').classList.remove('hidden');
+if (isAdminAuthenticated) {
+document.getElementById('adminPinScreen').classList.add('hidden');
+document.getElementById('adminDashboardContent').classList.remove('hidden');
+renderAdminDashboard();
+} else {
+document.getElementById('adminPinScreen').classList.remove('hidden');
+document.getElementById('adminDashboardContent').classList.add('hidden');
+}
+}
+
+function closeAdminModal() {
+document.getElementById('adminModal').classList.add('hidden');
+}
+
+function verifyAdminPin() {
+const pin = document.getElementById('adminPinInput').value;
+const err = document.getElementById('adminPinError');
+if (pin === '2026' || pin === '1234') {
+isAdminAuthenticated = true;
+err.classList.add('hidden');
+document.getElementById('adminPinScreen').classList.add('hidden');
+document.getElementById('adminDashboardContent').classList.remove('hidden');
+renderAdminDashboard();
+} else {
+err.classList.remove('hidden');
+}
+}
+
+function renderAdminDashboard() {
+const total = rsvpList.length;
+const attending = rsvpList.filter(r => r.status === 'Joyfully Accepts');
+const declined = rsvpList.filter(r => r.status === 'Regretfully Declines');
+const headcount = attending.reduce((acc, curr) => acc + (parseInt(curr.count) || 1), 0);
+
+document.getElementById('statTotalRsvp').textContent = total;
+document.getElementById('statAttendingCount').textContent = attending.length;
+document.getElementById('statTotalHeadcount').textContent = headcount;
+document.getElementById('statDeclinedCount').textContent = declined.length;
+
+renderAdminGuestTable();
+}
+
+function toggleRsvpLockState() {
+isRsvpLocked = !isRsvpLocked;
+const btn = document.getElementById('lockRsvpToggleBtn');
+const icon = document.getElementById('lockBtnIcon');
+const text = document.getElementById('lockBtnText');
+const banner = document.getElementById('rsvpLockedBanner');
+
+if (isRsvpLocked) {
+btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition bg-rose-700 text-white"
+icon.className = "fa-solid fa-lock"
+text.textContent = "Locked"
+banner.classList.remove('hidden');
+} else {
+btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition bg-emerald-700 text-white"
+icon.className = "fa-solid fa-lock-open"
+text.textContent = "Open"
+banner.classList.add('hidden');
+}
+showToast(isRsvpLocked ? "RSVP form locked." : "RSVP form opened.");
+}
+
+function renderAdminGuestTable() {
+const tbody = document.getElementById('adminGuestTableBody');
+const search = document.getElementById('guestSearchInput').value.toLowerCase();
+const filter = document.getElementById('adminFilterStatus').value;
+
+tbody.innerHTML = '';
+
+const filtered = rsvpList.filter(item => {
+const matchesSearch = item.name.toLowerCase().includes(search);
+const matchesFilter = filter === 'ALL' || item.status === filter;
+return matchesSearch && matchesFilter;
+});
+
+if (filtered.length === 0) {
+tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-charcoal/50 italic">No matching guests found.</td></tr>`;
+return;
+}
+
+filtered.forEach(item => {
+const tr = document.createElement('tr');
+const isAccept = item.status === 'Joyfully Accepts';
+tr.innerHTML = `
+<td class="p-3 font-bold text-charcoal">${escapeHtml(item.name)}</td>
+<td class="p-3 font-mono text-charcoal/80">${escapeHtml(item.contact || 'N/A')}</td>
+<td class="p-3">
+<span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${isAccept ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}">
+${isAccept ? 'Attending' : 'Declined'}
+</span>
+</td>
+<td class="p-3 font-bold text-darkgold">${isAccept ? item.count : 0}</td>
+<td class="p-3 text-charcoal/80">${escapeHtml(item.diet || 'None')}</td>
+<td class="p-3 max-w-xs truncate text-charcoal/80" title="${escapeHtml(item.msg || '')}">${escapeHtml(item.msg || 'No note')}</td>
+<td class="p-3 text-center">
+<button onclick="deleteRsvpRecord('${item.id}')" class="text-rose-600 hover:text-rose-800 p-1" title="Delete record">
+<i class="fa-solid fa-trash"></i>
+</button>
+</td>
+`;
+tbody.appendChild(tr);
+});
+}
+
+function deleteRsvpRecord(id) {
+rsvpList = rsvpList.filter(item => item.id !== id);
+localStorage.setItem('wedding_rsvps_christian_gold', JSON.stringify(rsvpList));
+renderPublicGuestbook();
+renderAdminDashboard();
+showToast("Record removed.");
+}
+
+function exportGuestListCSV() {
+if (rsvpList.length === 0) {
+showToast("No guest records to export.");
+return;
+}
+
+let csv = "Guest Name,Contact,Attending Status,Guest Count,Dietary Notes,Blessing Message,Timestamp\n"
+rsvpList.forEach(r => {
+csv += `"${r.name}","${r.contact}","${r.status}",${r.status === 'Joyfully Accepts' ? r.count : 0},"${r.diet}","${r.msg}","${r.timestamp}"\n`;
+});
+
+const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+const link = document.createElement('a');
+link.href = URL.createObjectURL(blob);
+link.setAttribute('download', 'Lovely_Pratik_Guest_List.csv');
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+showToast("Guest list exported as CSV!");
+}
+
+function escapeHtml(str) {
+if (!str) return '';
+return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function showToast(msg) {
+const toast = document.getElementById('toast');
+document.getElementById('toastText').textContent = msg;
+toast.classList.add('show');
+setTimeout(() => { toast.classList.remove('show'); }, 3500);
+}
+
+function downloadCalendarEvent() {
+const icsData =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Lovely & Pratik Christian Wedding//EN
+BEGIN:VEVENT
+SUMMARY:Lovely & Pratik's Christian Wedding
+DESCRIPTION:Holy Matrimony Nuptial Mass & Wedding Reception of Lovely & Pratik at Sacred Heart Church, Jasidih.
+LOCATION:Sacred Heart Church, Jasidih, Jharkhand
+DTSTART:20261105T050000Z
+DTEND:20261105T173000Z
+END:VEVENT
+END:VCALENDAR`;
+
+const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8;' });
+const link = document.createElement('a');
+link.href = window.URL.createObjectURL(blob);
+link.setAttribute('download', 'Lovely_Pratik_Christian_Wedding.ics');
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+showToast("Calendar event downloaded!");
+}
+
+window.onload = function() {
+init3D();
+updateCountdown();
+renderPublicGuestbook();
+};
+</script>
+</body>
+</html>
